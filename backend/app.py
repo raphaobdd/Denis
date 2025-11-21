@@ -5,18 +5,22 @@ import pandas as pd
 import joblib
 import json
 import os
+import matplotlib.pyplot as plt
+
 
 load_dotenv()
+
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 # ----------------------
 # CONFIGURAÇÃO FLASK
 # ----------------------
+
 app = Flask(
     __name__,
-    template_folder="../frontend/templates",
-    static_folder="../frontend/static"
+    template_folder=os.path.join(BASE_DIR, "frontend", "templates"),
+    static_folder=os.path.join(BASE_DIR, "frontend", "static")
 )
-
 
 # ----------------------
 # CONEXÃO SUPABASE
