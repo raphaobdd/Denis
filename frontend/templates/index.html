@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Modelo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <h1>Painel do Modelo de Asteroides</h1>
+
+    <div class="container">
+
+        <button onclick="location.href='/metrics'" class="btn">
+            Avaliar Métricas
+        </button>
+
+        <button onclick="location.href='/test-model'" class="btn secondary">
+            Testar Modelo com Dados Próprios
+        </button>
+
+    </div>
+
+</body>
+</html>
