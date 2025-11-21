@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Métricas do Modelo - Canguru</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Logo do Canguru -->
+    <div class="logo-container-small">
+        <div class="logo-small">
+           <img src="{{ url_for('static', filename='images/canguru.jpg') }}" alt="Canguru Logo"> 
+        </div>
+    </div>
+
+    <div class="content-wrapper">
+        <h1>📊 Métricas do Modelo</h1>
+
+        <div class="metric-box">
+            <h2>Métricas Gerais</h2>
+
+            {% if metrics.erro %}
+                <p class="error-message">{{ metrics.erro }}</p>
+            {% else %}
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <span class="metric-label">Acurácia</span>
+                        <span class="metric-value">{{ metrics.accuracy }}</span>
+                    </div>
+
+                    <div class="metric-card">
+                        <span class="metric-label">Precisão</span>
+                        <span class="metric-value">{{ metrics.precision }}</span>
+                    </div>
+
+                    <div class="metric-card">
+                        <span class="metric-label">Recall</span>
+                        <span class="metric-value">{{ metrics.recall }}</span>
+                    </div>
+
+                    <div class="metric-card">
+                        <span class="metric-label">F1 Score</span>
+                        <span class="metric-value">{{ metrics.f1 }}</span>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

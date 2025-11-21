@@ -2,24 +2,33 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Painel do Modelo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Canguru - Modelo de Asteroides</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
+    <!-- Logo do Canguru -->
+    <div class="logo-container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/canguru.jpg') }}" alt="Canguru Logo"> 
+        </div>
+        <div class="logo-text">CANGURU</div>
+    </div>
 
+    <!-- Título Principal -->
     <h1>Painel do Modelo de Asteroides</h1>
+    <p class="subtitle">Análise e Predição de Asteroides com IA</p>
 
+    <!-- Botões de Navegação -->
     <div class="container">
-
-        <button onclick="location.href='/metrics'" class="btn">
-            Avaliar Métricas
+        <button onclick="location.href='/metrics'" class="btn btn-primary">
+            📊 Avaliar Métricas
         </button>
 
-        <button onclick="location.href='/test-model'" class="btn secondary">
-            Testar Modelo com Dados Próprios
+        <button onclick="location.href='/test-model'" class="btn btn-secondary">
+            🧪 Testar Modelo
         </button>
-
     </div>
 
 </body>
