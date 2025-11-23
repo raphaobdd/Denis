@@ -1,0 +1,24 @@
+{
+    "nome_dataset": "asteroids_rows",
+    "descricao": "Dados de asteroides: posi\u00e7\u00e3o, di\u00e2metro, magnitude absoluta, \u00f3rbita, etc.",
+    "fonte": "NASA Planetary Data System (PDS) - Jet Propulsion Laboratory",
+    "url_fonte": "https://api.nasa.gov/neo/rest/v1/neo/browse",
+    "licenca": "Public Domain / United States Government Work",
+    "data_extracao": "2025-11-22",
+    "volume": {
+        "linhas": 800,
+        "colunas": 9,
+        "tamanho_MB": 0.13,
+        "colunas_nomes": [
+            "id",
+            "name",
+            "absolute_magnitude",
+            "is_potentially_hazardous_asteroid",
+            "diameter_km_min",
+            "diameter_km_max",
+            "close_approach_date",
+            "rel_km_s",
+            "miss_km"
+        ]
+    }
+}

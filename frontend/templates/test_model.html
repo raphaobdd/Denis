@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificação de Asteroide</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- Logo e título -->
+        <div class="logo-container">
+            <div class="logo"></div>
+            <div class="logo-text">Canguru</div>
+        </div>
+
+        <h1 class="mb-4 text-center">Verificação de Asteroide Perigoso</h1>
+
+        <!-- Formulário de Entrada -->
+        <form method="POST" action="/predict" class="mx-auto" style="max-width: 600px;">
+            {% if feature_names %}
+                {% for col in feature_names %}
+                <div class="mb-3">
+                    <label for="{{ col }}" class="form-label">{{ col.replace('_', ' ').title() }}</label>
+                    <input type="number" step="any" class="form-control" id="{{ col }}" name="{{ col }}" required>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="error-message">❌ Nenhuma feature disponível. Verifique o arquivo feature_names.json.</p>
+            {% endif %}
+            <button type="submit" class="btn btn-primary w-100">Analisar</button>
+        </form>
+
+        <!-- Resultado -->
+        {% if result %}
+        <div class="alert mt-4 {% if result == 'Perigoso' %}alert-danger{% else %}alert-success{% endif %}" role="alert">
+            <h4 class="alert-heading">Resultado da Análise:</h4>
+            <p>O asteroide analisado é <strong>{{ result }}</strong>.</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

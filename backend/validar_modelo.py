@@ -73,6 +73,12 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train_res)
 X_test_scaled = scaler.transform(X_test_imp)
 
+# Salvar nomes das features
+feature_names = list(X.columns)
+
+with open("feature_names.json", "w") as f:
+    json.dump(feature_names, f)
+
 # ----------------------------------------------------------------
 # 8. Modelo
 # ----------------------------------------------------------------

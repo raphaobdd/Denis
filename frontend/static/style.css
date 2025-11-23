@@ -14,7 +14,8 @@ body {
     justify-content: center;
     color: #fff;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+    padding: 20px 0;
 }
 
 /* Efeito de estrelas animadas no fundo */
@@ -34,6 +35,7 @@ body::before {
     background-size: 200% 200%;
     animation: stars 8s ease-in-out infinite;
     opacity: 0.6;
+    z-index: 0;
 }
 
 @keyframes stars {
@@ -70,7 +72,6 @@ body::before {
     overflow: hidden;
 }
 
-/* Se você usar a imagem da logo, descomente e ajuste: */
 .logo img {
     width: 100%;
     height: 100%;
@@ -78,7 +79,6 @@ body::before {
     border-radius: 50%;
 }
 
-/* Emoji placeholder (remova quando adicionar a imagem) */
 .logo::after {
     font-size: 80px;
     position: absolute;
@@ -229,64 +229,6 @@ h1 {
 
 .btn-secondary:active {
     transform: translateY(-1px);
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 32px;
-    }
-
-    .subtitle {
-        font-size: 16px;
-    }
-
-    .logo {
-        width: 140px;
-        height: 140px;
-    }
-
-    .logo::after {
-        font-size: 60px;
-    }
-
-    .logo-text {
-        font-size: 28px;
-    }
-
-    .btn {
-        padding: 16px 35px;
-        font-size: 18px;
-    }
-
-    .container {
-        flex-direction: column;
-        gap: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    h1 {
-        font-size: 26px;
-    }
-
-    .logo {
-        width: 120px;
-        height: 120px;
-    }
-
-    .logo::after {
-        font-size: 50px;
-    }
-
-    .logo-text {
-        font-size: 24px;
-    }
-
-    .btn {
-        width: 100%;
-        max-width: 300px;
-    }
 }
 
 /* ========================================= */
@@ -494,8 +436,192 @@ table tbody tr:hover {
     box-shadow: 0 6px 20px rgba(90, 24, 154, 0.4);
 }
 
-/* Responsividade para Métricas */
+/* ========================================= */
+/* ESTILOS PARA FORMULÁRIO DE VERIFICAÇÃO */
+/* ========================================= */
+
+.form-wrapper {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 
+        0 8px 32px rgba(157, 78, 221, 0.2),
+        0 0 20px rgba(157, 78, 221, 0.1);
+    border: 1px solid rgba(157, 78, 221, 0.2);
+    animation: fadeInUp 0.8s ease-out;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    display: block;
+    color: #5a189a;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid rgba(157, 78, 221, 0.3);
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: white;
+    color: #333;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #9d4edd;
+    box-shadow: 0 0 0 3px rgba(157, 78, 221, 0.1);
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 18px;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #9d4edd 0%, #7b2cbf 100%);
+    color: white;
+    box-shadow: 
+        0 8px 25px rgba(157, 78, 221, 0.4),
+        0 0 20px rgba(157, 78, 221, 0.3);
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-submit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn-submit:hover::before {
+    left: 100%;
+}
+
+.btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 12px 35px rgba(157, 78, 221, 0.5),
+        0 0 30px rgba(157, 78, 221, 0.4);
+}
+
+.btn-submit:active {
+    transform: translateY(-1px);
+}
+
+.result-box {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 20px;
+    margin-top: 30px;
+    box-shadow: 
+        0 8px 32px rgba(157, 78, 221, 0.2),
+        0 0 20px rgba(157, 78, 221, 0.1);
+    border: 1px solid rgba(157, 78, 221, 0.2);
+    animation: fadeInUp 0.8s ease-out;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.result-danger {
+    border-left: 5px solid #ff006e;
+    background: linear-gradient(135deg, rgba(255, 0, 110, 0.1) 0%, rgba(255, 0, 110, 0.05) 100%);
+}
+
+.result-success {
+    border-left: 5px solid #10b981;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+.result-heading {
+    color: #5a189a;
+    font-size: 24px;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.result-text {
+    color: #333;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.result-text strong {
+    color: #5a189a;
+    font-size: 22px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* ========================================= */
+/* RESPONSIVIDADE */
+/* ========================================= */
+
 @media (max-width: 768px) {
+    h1 {
+        font-size: 32px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+    }
+
+    .logo {
+        width: 140px;
+        height: 140px;
+    }
+
+    .logo::after {
+        font-size: 60px;
+    }
+
+    .logo-text {
+        font-size: 28px;
+    }
+
+    .btn {
+        padding: 16px 35px;
+        font-size: 18px;
+    }
+
+    .container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
     .content-wrapper {
         width: 95%;
         padding: 15px;
@@ -525,9 +651,52 @@ table tbody tr:hover {
     .metric-value {
         font-size: 28px;
     }
+
+    /* Formulário Responsivo */
+    .form-wrapper {
+        padding: 25px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .result-heading {
+        font-size: 20px;
+    }
+
+    .result-text {
+        font-size: 16px;
+    }
+
+    .result-text strong {
+        font-size: 18px;
+    }
 }
 
 @media (max-width: 480px) {
+    h1 {
+        font-size: 26px;
+    }
+
+    .logo {
+        width: 120px;
+        height: 120px;
+    }
+
+    .logo::after {
+        font-size: 50px;
+    }
+
+    .logo-text {
+        font-size: 24px;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+
     .table-container {
         font-size: 12px;
     }
@@ -540,5 +709,24 @@ table tbody tr:hover {
     .btn-back {
         padding: 12px 30px;
         font-size: 14px;
+    }
+
+    /* Formulário Mobile */
+    .form-wrapper {
+        padding: 20px;
+    }
+
+    .form-control {
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    .form-label {
+        font-size: 12px;
+    }
+
+    .btn-submit {
+        padding: 15px;
+        font-size: 16px;
     }
 }

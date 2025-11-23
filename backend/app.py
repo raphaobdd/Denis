@@ -5,16 +5,13 @@ import pandas as pd
 import joblib
 import json
 import os
-import matplotlib.pyplot as plt
 
-
+# ----------------------
+# CONFIGURAÇÃO E AMBIENTE
+# ----------------------
 load_dotenv()
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
-# ----------------------
-# CONFIGURAÇÃO FLASK
-# ----------------------
 
 app = Flask(
     __name__,
@@ -30,26 +27,38 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ----------------------
-# CARREGAR MODELO
+# CARREGAR MODELO E PREPROCESSADORES
 # ----------------------
 try:
     model = joblib.load("model.pkl")
-    print("✔ Modelo carregado com sucesso.")
-except:
+    scaler = joblib.load("scaler.pkl")
+    imputer = joblib.load("imputer.pkl")
+    print("✔ Modelos e preprocessadores carregados com sucesso.")
+except Exception as e:
     model = None
-    print("❌ ERRO: modelo não encontrado. Treine novamente com train_model.py")
+    scaler = None
+    imputer = None
+    print("❌ ERRO ao carregar modelo/preprocessadores:", e)
 
 # ----------------------
-# ROTAS PRINCIPAIS
+# CARREGAR NOMES DAS FEATURES
 # ----------------------
+try:
+    with open("feature_names.json", "r") as f:
+        feature_names = json.load(f)
+except:
+    feature_names = []
+    print("❌ ERRO: feature_names.json não encontrado.")
+
+# ----------------------
+# ROTAS
+# ----------------------
+
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
-# ----------------------
-# MÉTRICAS
-# ----------------------
 @app.route("/metrics")
 def metrics():
     """Exibe métricas do modelo carregadas via JSON."""
@@ -58,56 +67,49 @@ def metrics():
             metrics = json.load(f)
     except:
         metrics = {"erro": "Métricas não encontradas. Rode o treinamento novamente."}
-
     return render_template("metrics.html", metrics=metrics)
 
 
-# ----------------------
-# PÁGINA PARA TESTE DO MODELO
-# ----------------------
-@app.route("/test-model")
-def test_model_page():
-    return render_template("test_model.html")
-
-
-# ----------------------
-# API QUE FAZ A PREDIÇÃO
-# ----------------------
-@app.route("/predict", methods=["POST"])
-def predict():
-    if not model:
-        return jsonify({"erro": "Modelo não carregado"}), 500
-
-    try:
-        data = request.form
-
-        # Coletar campos enviados pelo formulário
-        absolute_magnitude = float(data.get("absolute_magnitude"))
-
-        df = pd.DataFrame([{
-            "absolute_magnitude": absolute_magnitude
-        }])
-
-        prediction = model.predict(df)[0]
-
-        return render_template(
-            "test_model.html",
-            result="Perigoso" if prediction == 1 else "Não perigoso",
-            magnitude=absolute_magnitude
-        )
-
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 400
-
-
-# ----------------------
-# API PARA EXPORTAR OS DADOS ATUAIS DO SUPABASE
-# ----------------------
 @app.route("/dados")
 def dados():
     """Retorna os dados da tabela asteroids do Supabase."""
     res = supabase.table("asteroids").select("*").execute()
     return jsonify(res.data)
+
+
+@app.route("/test-model")
+def test_model_page():
+    """Renderiza a página do formulário para teste do modelo."""
+    return render_template("test_model.html", feature_names=feature_names)
+
+
+@app.route("/predict", methods=["POST"])
+def predict():
+    """Recebe dados do formulário, aplica preprocessamento e faz a predição."""
+    if not model or not scaler or not imputer:
+        return jsonify({"erro": "Modelo ou preprocessadores não carregados"}), 500
+
+    try:
+        # Receber dados do formulário
+        data = {col: float(request.form.get(col)) for col in feature_names}
+
+        # Criar DataFrame
+        df_user = pd.DataFrame([data])
+
+        # Aplicar imputer e scaler
+        df_imp = imputer.transform(df_user)
+        df_scaled = scaler.transform(df_imp)  # type: ignore
+
+        # Predição
+        pred = model.predict(df_scaled)[0]
+        result = "Perigoso" if pred == 1 else "Não perigoso"
+
+        return render_template("test_model.html",
+                               result=result,
+                               feature_names=feature_names)
+
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 400
 
 
 # ----------------------
