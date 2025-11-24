@@ -1,33 +1,35 @@
-name: CI/CD Azure Container App (Students)
+name: CI/CD Testes Flask
 
 on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
-  build-and-deploy:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Login no ACR
-        run: |
-          echo ${{ secrets.ACR_PASSWORD }} | docker login ${{ secrets.ACR_NAME }}.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
 
-      - name: Build e Push Docker
+      - name: Install dependencies
         run: |
-          IMAGE_TAG=${{ secrets.ACR_NAME }}.azurecr.io/${{ secrets.CONTAINER_APP_NAME }}:${GITHUB_SHA}
-          docker build -t $IMAGE_TAG .
-          docker push $IMAGE_TAG
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Deploy Container App
+      - name: Run tests
         run: |
-          IMAGE_TAG=${{ secrets.ACR_NAME }}.azurecr.io/${{ secrets.CONTAINER_APP_NAME }}:${GITHUB_SHA}
-          az containerapp update \
-            --name ${{ secrets.CONTAINER_APP_NAME }} \
-            --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --image $IMAGE_TAG \
-            --cpu 0.5 --memory 1.0Gi
+          # Aqui você roda seus testes unitários ou pytest
+          pytest --maxfail=1 --disable-warnings -v
+
+      - name: Lint code
+        run: |
+          pip install flake8
+          flake8 .
