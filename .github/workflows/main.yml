@@ -28,7 +28,9 @@ jobs:
         run: |
           pytest tests -v --maxfail=1 --disable-warnings
         env:
-          PYTHONPATH: .   # adiciona raiz do projeto ao path do Python
+          PYTHONPATH: .
+          SUPABASE_URL: dummy_url
+          SUPABASE_KEY: dummy_key
 
       - name: Lint code
         run: |
