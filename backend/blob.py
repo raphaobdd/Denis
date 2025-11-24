@@ -9,7 +9,9 @@ load_dotenv()
 connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
 
 if not connection_string:
-    raise ValueError("AZURE_STORAGE_CONNECTION_STRING não encontrada no .env")
+    raise ValueError(
+        "AZURE_STORAGE_CONNECTION_STRING não encontrada no .env"
+    )
 
 # ----------------------
 # CONFIGURAÇÃO

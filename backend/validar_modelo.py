@@ -20,7 +20,9 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
-    raise ValueError("❌ SUPABASE_URL ou SUPABASE_KEY não encontradas no .env")
+    raise ValueError(
+        "❌ SUPABASE_URL ou SUPABASE_KEY não encontradas no .env"
+    )
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
@@ -47,7 +49,11 @@ y = df[TARGET].astype(int)
 # 4. TRAIN-TEST SPLIT
 # ----------------------
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42, stratify=y
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
 )
 
 # ----------------------
@@ -98,7 +104,7 @@ metrics = {
     "accuracy": round(accuracy_score(y_test, y_pred), 3),
     "precision": round(precision_score(y_test, y_pred, zero_division=0), 3),
     "recall": round(recall_score(y_test, y_pred, zero_division=0), 3),
-    "f1": round(f1_score(y_test, y_pred, zero_division=0), 3)
+    "f1": round(f1_score(y_test, y_pred, zero_division=0), 3),
 }
 print("\nMÉTRICAS DO MODELO:", metrics)
 

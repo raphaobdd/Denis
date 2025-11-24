@@ -1,34 +1,44 @@
-import os
-from supabase import create_client
 import pandas as pd
-from dotenv import load_dotenv
+import json
+from datetime import date
 
 # ----------------------
-# CARREGA VARIÁVEIS DE AMBIENTE
+# CARREGA DATASET
 # ----------------------
-load_dotenv()
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-
-if not SUPABASE_URL or not SUPABASE_KEY:
-    raise ValueError("❌ SUPABASE_URL ou SUPABASE_KEY não encontradas no .env")
+df = pd.read_csv("asteroids_rows.csv")
 
 # ----------------------
-# CONEXÃO COM SUPABASE
+# CALCULA VOLUME
 # ----------------------
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+linhas = len(df)
+colunas = len(df.columns)
+tamanho_MB = df.memory_usage(deep=True).sum() / 1024**2
+colunas_nomes = list(df.columns)
 
 # ----------------------
-# EXTRAI DADOS DA TABELA
+# CRIA JSON DE METADADOS
 # ----------------------
-res = supabase.table("asteroids").select("*").execute()
-data = res.data
+metadados = {
+    "nome_dataset": "asteroids_rows",
+    "descricao": (
+        "Dados de asteroides: posição, diâmetro, magnitude absoluta, órbita, etc."
+    ),
+    "fonte": "NASA Planetary Data System (PDS) - Jet Propulsion Laboratory",
+    "url_fonte": "https://api.nasa.gov/neo/rest/v1/neo/browse",
+    "licenca": "Public Domain / United States Government Work",
+    "data_extracao": date.today().isoformat(),
+    "volume": {
+        "linhas": linhas,
+        "colunas": colunas,
+        "tamanho_MB": round(tamanho_MB, 2),
+        "colunas_nomes": colunas_nomes,
+    },
+}
 
 # ----------------------
-# CONVERTE PARA DATAFRAME E SALVA COMO CSV
+# SALVA EM JSON
 # ----------------------
-df = pd.DataFrame(data)
-csv_path = "backend/asteroids_rows.csv"
-df.to_csv(csv_path, index=False)
+with open("asteroids_metadata.json", "w") as f:
+    json.dump(metadados, f, indent=4)
 
-print(f"✅ Dados salvos em {csv_path}")
+print("✅ Metadados gerados em asteroids_metadata.json")

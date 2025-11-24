@@ -66,7 +66,9 @@ def metrics():
             metrics = json.load(f)
     except Exception as e:
         metrics = {
-            "erro": "Métricas não encontradas. Rode o treinamento novamente."
+            "erro": (
+                "Métricas não encontradas. Rode o treinamento novamente."
+            )
         }
         print("❌ ERRO ao ler metrics.json:", e)
 
