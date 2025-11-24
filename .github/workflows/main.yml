@@ -23,11 +23,6 @@ jobs:
           docker build -t $IMAGE_TAG .
           docker push $IMAGE_TAG
 
-      - name: Login Azure CLI (opcional)
-        uses: azure/cli@v1
-        with:
-          azcliversion: 2.65.0
-
       - name: Deploy Container App
         run: |
           IMAGE_TAG=${{ secrets.ACR_NAME }}.azurecr.io/${{ secrets.CONTAINER_APP_NAME }}:${GITHUB_SHA}
