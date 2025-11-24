@@ -26,8 +26,9 @@ jobs:
 
       - name: Run tests
         run: |
-          # Aqui você roda seus testes unitários ou pytest
-          pytest --maxfail=1 --disable-warnings -v
+          pytest tests -v --maxfail=1 --disable-warnings
+        env:
+          PYTHONPATH: .   # adiciona raiz do projeto ao path do Python
 
       - name: Lint code
         run: |
