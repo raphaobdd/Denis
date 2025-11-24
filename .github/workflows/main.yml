@@ -30,5 +30,4 @@ jobs:
             --name ${{ secrets.CONTAINER_APP_NAME }} \
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
             --image $IMAGE_TAG \
-            --cpu 0.5 --memory 1.0Gi \
-            --environment asteroids-env
+            --cpu 0.5 --memory 1.0Gi
