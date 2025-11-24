@@ -1,4 +1,4 @@
-name: CI/CD Testes Flask
+name: CI/CD Testes Flask Simplificado
 
 on:
   push:
@@ -24,13 +24,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run tests
+      - name: Run simplified tests
         run: |
-          pytest tests -v --maxfail=1 --disable-warnings
-        env:
-          PYTHONPATH: .
-          SUPABASE_URL: dummy_url
-          SUPABASE_KEY: dummy_key
+          # Define PYTHONPATH para conseguir importar backend.app
+          PYTHONPATH=. pytest tests -v --maxfail=1 --disable-warnings
 
       - name: Lint code
         run: |
