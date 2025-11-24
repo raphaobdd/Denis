@@ -40,6 +40,7 @@ except Exception as e:
     imputer = None
     print("❌ ERRO ao carregar modelo/preprocessadores:", e)
 
+
 # ----------------------
 # CARREGAR NOMES DAS FEATURES
 # ----------------------
@@ -49,6 +50,7 @@ try:
 except Exception as e:
     feature_names = []
     print("❌ ERRO: feature_names.json não encontrado.", e)
+
 
 # ----------------------
 # ROTAS
@@ -67,7 +69,8 @@ def metrics():
     except Exception as e:
         metrics = {
             "erro": (
-                "Métricas não encontradas. Rode o treinamento novamente."
+                "Métricas não encontradas. "
+                "Rode o treinamento novamente."
             )
         }
         print("❌ ERRO ao ler metrics.json:", e)
@@ -90,9 +93,9 @@ def test_model_page():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    """Recebe dados do formulário, aplica preprocessamento e faz a predição."""
+    """Recebe dados do formulário, aplica preprocessamento e faz predição"""
     if not model or not scaler or not imputer:
-        return jsonify({"erro": "Modelo ou preprocessadores não carregados"}), 500
+        return jsonify({"erro": "Modelo ou preprocess não carregados"}), 500
 
     try:
         # Receber dados do formulário
@@ -110,7 +113,9 @@ def predict():
         result = "Perigoso" if pred == 1 else "Não perigoso"
 
         return render_template(
-            "test_model.html", result=result, feature_names=feature_names
+            "test_model.html",
+            result=result,
+            feature_names=feature_names
         )
 
     except Exception as e:

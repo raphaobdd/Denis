@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 from supabase import create_client
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from imblearn.over_sampling import SMOTE

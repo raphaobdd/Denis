@@ -21,7 +21,7 @@ colunas_nomes = list(df.columns)
 metadados = {
     "nome_dataset": "asteroids_rows",
     "descricao": (
-        "Dados de asteroides: posição, diâmetro, magnitude absoluta, órbita, etc."
+        "Dados: posição, diâmetro, magnitude absoluta, órbita, etc."
     ),
     "fonte": "NASA Planetary Data System (PDS) - Jet Propulsion Laboratory",
     "url_fonte": "https://api.nasa.gov/neo/rest/v1/neo/browse",

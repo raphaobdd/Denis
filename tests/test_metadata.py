@@ -64,7 +64,7 @@ def test_csv_carregado():
 
 
 def test_metadados_gerados():
-    """Verifica se o JSON de metadados foi criado e contém campos corretos."""
+    """Verifica se JSON de metadados foi criado e contém campos corretos."""
     assert os.path.exists(JSON_PATH)
     with open(JSON_PATH) as f:
         metadados = json.load(f)
