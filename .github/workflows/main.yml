@@ -1,0 +1,39 @@
+name: CI/CD Azure Container App (Students)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login no ACR
+        run: |
+          echo ${{ secrets.ACR_PASSWORD }} | docker login ${{ secrets.ACR_NAME }}.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
+
+      - name: Build e Push Docker
+        run: |
+          IMAGE_TAG=${{ secrets.ACR_NAME }}.azurecr.io/${{ secrets.CONTAINER_APP_NAME }}:${GITHUB_SHA}
+          docker build -t $IMAGE_TAG .
+          docker push $IMAGE_TAG
+
+      - name: Login Azure CLI (opcional)
+        uses: azure/cli@v1
+        with:
+          azcliversion: 2.65.0
+
+      - name: Deploy Container App
+        run: |
+          IMAGE_TAG=${{ secrets.ACR_NAME }}.azurecr.io/${{ secrets.CONTAINER_APP_NAME }}:${GITHUB_SHA}
+          az containerapp update \
+            --name ${{ secrets.CONTAINER_APP_NAME }} \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --image $IMAGE_TAG \
+            --cpu 0.5 --memory 1.0Gi \
+            --environment asteroids-env
