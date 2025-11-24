@@ -1,12 +1,9 @@
 import pytest
 from unittest.mock import patch
-import sys
-import os
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-# Mocka create_client antes de importar o app
-with patch("backend.app.create_client"):
+# Primeiro patch do create_client, antes de importar app
+with patch("backend.app.create_client") as mock_create:
+    mock_create.return_value = None  # ou um mock se precisar
     from backend.app import app
 
 @pytest.fixture
@@ -23,6 +20,6 @@ def test_index(client):
 
 def test_test_model_page(client):
     rv = client.get("/test-model")
-    assert rv.status_code == 200
     data = rv.data.decode("utf-8")
+    assert rv.status_code == 200
     assert "<form" in data
