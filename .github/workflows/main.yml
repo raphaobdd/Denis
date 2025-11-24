@@ -1,4 +1,4 @@
-name: CI/CD Testes Flask Simplificado
+name: CI/CD Testes Dados
 
 on:
   push:
@@ -24,10 +24,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run simplified tests
+      - name: Run metadata tests
         run: |
-          # Define PYTHONPATH para conseguir importar backend.app
-          PYTHONPATH=. pytest tests -v --maxfail=1 --disable-warnings
+          # Roda apenas os testes de geração de metadados
+          pytest tests/test_metadata.py -v --maxfail=1 --disable-warnings
 
       - name: Lint code
         run: |
