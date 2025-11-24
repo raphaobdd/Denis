@@ -10,7 +10,8 @@ matplotlib>=3.5
 psycopg2-binary>=2.9
 gunicorn>=20.0
 azure-storage-blob==12.19.1
-pytest 9.0.1
+pytest==9.0.1
+
 
 # Dev / optional
 pytest>=7.0
