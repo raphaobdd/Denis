@@ -115,7 +115,8 @@ def predict():
         return render_template(
             "test_model.html",
             result=result,
-            feature_names=feature_names
+            feature_names="Identificação, Brilho intrinseco, Diâmetro mín" \
+            "Diâmetro máx, Velocidade rel., Distância de aproximação" \
         )
 
     except Exception as e:
