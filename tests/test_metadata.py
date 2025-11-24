@@ -4,13 +4,15 @@ import pandas as pd
 import pytest
 from datetime import date
 
-# Caminho para o CSV de teste e JSON gerado
-CSV_PATH = os.path.join(os.path.dirname(__file__), "../backend/asteroids_rows.csv")
-JSON_PATH = os.path.join(os.path.dirname(__file__), "../backend/asteroids_metadata.json")
+# Caminhos para o CSV de teste e JSON gerado
+BASE_DIR = os.path.dirname(__file__)
+CSV_PATH = os.path.join(BASE_DIR, "../backend/asteroids_rows.csv")
+JSON_PATH = os.path.join(BASE_DIR, "../backend/asteroids_metadata.json")
+
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_csv_and_metadata():
-    """Cria CSV de teste antes dos testes e gera o JSON de metadados."""
+    """Cria CSV de teste e gera o JSON de metadados antes dos testes."""
     # Cria CSV de teste
     df = pd.DataFrame({
         "id": [1, 2],
@@ -21,7 +23,7 @@ def setup_csv_and_metadata():
     os.makedirs(os.path.dirname(CSV_PATH), exist_ok=True)
     df.to_csv(CSV_PATH, index=False)
 
-    # Gera metadados em JSON
+    # Gera JSON de metadados
     linhas = len(df)
     colunas = len(df.columns)
     tamanho_MB = df.memory_usage(deep=True).sum() / 1024**2
@@ -45,9 +47,9 @@ def setup_csv_and_metadata():
     with open(JSON_PATH, "w") as f:
         json.dump(metadados, f, indent=4)
 
-    yield  # roda os testes
+    yield  # executa os testes
 
-    # Cleanup opcional
+    # Cleanup
     if os.path.exists(CSV_PATH):
         os.remove(CSV_PATH)
     if os.path.exists(JSON_PATH):
@@ -55,19 +57,19 @@ def setup_csv_and_metadata():
 
 
 def test_csv_carregado():
-    """Testa se o CSV foi carregado e contém colunas"""
+    """Verifica se o CSV foi carregado corretamente."""
     df = pd.read_csv(CSV_PATH)
     assert not df.empty
     assert len(df.columns) > 0
 
 
 def test_metadados_gerados():
-    """Testa se o JSON de metadados foi criado"""
+    """Verifica se o JSON de metadados foi criado e contém campos corretos."""
     assert os.path.exists(JSON_PATH)
     with open(JSON_PATH) as f:
         metadados = json.load(f)
 
-    # Verifica campos principais
+    # Checagem de campos principais
     assert "nome_dataset" in metadados
     assert "volume" in metadados
     assert "linhas" in metadados["volume"]

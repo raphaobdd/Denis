@@ -16,7 +16,7 @@ BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 app = Flask(
     __name__,
     template_folder=os.path.join(BASE_DIR, "frontend", "templates"),
-    static_folder=os.path.join(BASE_DIR, "frontend", "static")
+    static_folder=os.path.join(BASE_DIR, "frontend", "static"),
 )
 
 # ----------------------
@@ -46,14 +46,13 @@ except Exception as e:
 try:
     with open("feature_names.json", "r") as f:
         feature_names = json.load(f)
-except:
+except Exception as e:
     feature_names = []
-    print("❌ ERRO: feature_names.json não encontrado.")
+    print("❌ ERRO: feature_names.json não encontrado.", e)
 
 # ----------------------
 # ROTAS
 # ----------------------
-
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -65,8 +64,12 @@ def metrics():
     try:
         with open("metrics.json", "r") as f:
             metrics = json.load(f)
-    except:
-        metrics = {"erro": "Métricas não encontradas. Rode o treinamento novamente."}
+    except Exception as e:
+        metrics = {
+            "erro": "Métricas não encontradas. Rode o treinamento novamente."
+        }
+        print("❌ ERRO ao ler metrics.json:", e)
+
     return render_template("metrics.html", metrics=metrics)
 
 
@@ -104,9 +107,9 @@ def predict():
         pred = model.predict(df_scaled)[0]
         result = "Perigoso" if pred == 1 else "Não perigoso"
 
-        return render_template("test_model.html",
-                               result=result,
-                               feature_names=feature_names)
+        return render_template(
+            "test_model.html", result=result, feature_names=feature_names
+        )
 
     except Exception as e:
         return jsonify({"erro": str(e)}), 400

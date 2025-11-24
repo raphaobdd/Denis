@@ -12,76 +12,74 @@ from imblearn.over_sampling import SMOTE
 import joblib
 import matplotlib.pyplot as plt
 
-# ----------------------------------------------------------------
-# 1. Configurações / Supabase
-# ----------------------------------------------------------------
+# ----------------------
+# 1. CONFIGURAÇÃO / SUPABASE
+# ----------------------
 load_dotenv()
-
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise ValueError("❌ SUPABASE_URL ou SUPABASE_KEY não encontradas no .env")
+
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# ----------------------------------------------------------------
-# 2. Buscar Dataset da Tabela do Supabase
-# ----------------------------------------------------------------
+# ----------------------
+# 2. EXTRAIR DATASET
+# ----------------------
 response = supabase.table("asteroids").select("*").execute()
 df = pd.DataFrame(response.data)
 
 if df.empty:
-    raise Exception("A tabela 'asteroids' está vazia ou não existe!")
+    raise ValueError("A tabela 'asteroids' está vazia ou não existe!")
 
-# ----------------------------------------------------------------
-# 3. Preparar dados
-# ----------------------------------------------------------------
+# ----------------------
+# 3. PREPARAR DADOS
+# ----------------------
 TARGET = "is_potentially_hazardous_asteroid"
+DROP_COLS = ["name", "close_approach_date"]
+DROP_COLS = [c for c in DROP_COLS if c in df.columns]
 
-drop_cols = ["name", "close_approach_date"]
-drop_cols = [c for c in drop_cols if c in df.columns]
-
-X = df.drop(columns=[TARGET] + drop_cols)
+X = df.drop(columns=[TARGET] + DROP_COLS)
 y = df[TARGET].astype(int)
 
-# ----------------------------------------------------------------
-# 4. Train-Test split
-# ----------------------------------------------------------------
+# ----------------------
+# 4. TRAIN-TEST SPLIT
+# ----------------------
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
 
-# ----------------------------------------------------------------
-# 5. Imputar valores ausentes (resolver NaNs)
-# ----------------------------------------------------------------
+# ----------------------
+# 5. IMPUTAR VALORES AUSENTES
+# ----------------------
 imputer = SimpleImputer(strategy="median")
 X_train_imp = imputer.fit_transform(X_train)
 X_test_imp = imputer.transform(X_test)
 
-# ----------------------------------------------------------------
-# 6. Aplicar SMOTE no TREINO
-# ----------------------------------------------------------------
+# ----------------------
+# 6. SMOTE
+# ----------------------
 print("Antes do SMOTE:", y_train.value_counts().to_dict())
-
-sm = SMOTE(random_state=42)
-X_train_res, y_train_res = sm.fit_resample(X_train_imp, y_train)
-
+smote = SMOTE(random_state=42)
+X_train_res, y_train_res = smote.fit_resample(X_train_imp, y_train)
 print("Depois do SMOTE:", y_train_res.value_counts().to_dict())
 
-# ----------------------------------------------------------------
-# 7. Normalização
-# ----------------------------------------------------------------
+# ----------------------
+# 7. NORMALIZAÇÃO
+# ----------------------
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train_res)
 X_test_scaled = scaler.transform(X_test_imp)
 
 # Salvar nomes das features
 feature_names = list(X.columns)
-
-with open("feature_names.json", "w") as f:
+with open("backend/feature_names.json", "w") as f:
     json.dump(feature_names, f)
 
-# ----------------------------------------------------------------
-# 8. Modelo
-# ----------------------------------------------------------------
+# ----------------------
+# 8. TREINAR MODELO
+# ----------------------
 model = RandomForestClassifier(
     n_estimators=500,
     max_depth=None,
@@ -90,28 +88,23 @@ model = RandomForestClassifier(
     class_weight="balanced",
     random_state=42
 )
-
 model.fit(X_train_scaled, y_train_res)
 
-# ----------------------------------------------------------------
-# 9. Métricas
-# ----------------------------------------------------------------
+# ----------------------
+# 9. MÉTRICAS
+# ----------------------
 y_pred = model.predict(X_test_scaled)
-
 metrics = {
     "accuracy": round(accuracy_score(y_test, y_pred), 3),
     "precision": round(precision_score(y_test, y_pred, zero_division=0), 3),
     "recall": round(recall_score(y_test, y_pred, zero_division=0), 3),
     "f1": round(f1_score(y_test, y_pred, zero_division=0), 3)
 }
+print("\nMÉTRICAS DO MODELO:", metrics)
 
-
-print("\nMÉTRICAS DO MODELO:")
-print(metrics)
-
-# ----------------------------------------------------------------
-# 10. Gráfico
-# ----------------------------------------------------------------
+# ----------------------
+# 10. GRÁFICO REAL X PREDITO
+# ----------------------
 img_dir = os.path.join("frontend", "static", "images")
 os.makedirs(img_dir, exist_ok=True)
 
@@ -120,26 +113,24 @@ plt.plot(y_test.values, label="Real")
 plt.plot(y_pred, label="Predito")
 plt.legend()
 plt.title("Comparação: Real vs Predito")
-
 output_img = os.path.join(img_dir, "grafico_comparacao.png")
 plt.savefig(output_img, bbox_inches="tight")
 plt.close()
+print("✔ Gráfico salvo em", output_img)
 
-print("✔ gráfico salvo em", output_img)
+# ----------------------
+# 11. SALVAR MODELO, SCALER, IMPUTER E MÉTRICAS
+# ----------------------
+joblib.dump(model, "backend/model.pkl")
+joblib.dump(scaler, "backend/scaler.pkl")
+joblib.dump(imputer, "backend/imputer.pkl")
 
-# ----------------------------------------------------------------
-# 11. Exportar modelo, scaler e métricas
-# ----------------------------------------------------------------
-joblib.dump(model, "model.pkl")
-joblib.dump(scaler, "scaler.pkl")
-joblib.dump(imputer, "imputer.pkl")  # IMPORTANTE para usar na predição depois
-
-with open("metrics.json", "w") as f:
+with open("backend/metrics.json", "w") as f:
     json.dump(metrics, f, indent=4)
 
-print("\nArquivos gerados:")
+print("\nArquivos gerados em backend/:")
 print(" - model.pkl")
 print(" - scaler.pkl")
 print(" - imputer.pkl")
 print(" - metrics.json")
-print("\nTreinamento concluído!")
+print("\nTreinamento concluído! ✅")
