@@ -198,3 +198,8 @@ cd infra
 terraform init
 terraform plan
 terraform apply
+
+<img width="1365" height="639" alt="image" src="https://github.com/user-attachments/assets/b870fbe3-59bf-4405-8aac-f4cb2cabc98a" />
+<img width="1365" height="635" alt="image" src="https://github.com/user-attachments/assets/3eae897a-7002-438c-a2ad-de5c902f4c6c" />
+<img width="1365" height="641" alt="image" src="https://github.com/user-attachments/assets/c6f8f882-3189-4c17-8eff-a92de457f041" />
+
